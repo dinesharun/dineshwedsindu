@@ -1,0 +1,6 @@
+@font-face {
+  font-family: 'KarlaTamilUpright';
+  font-style: normal;
+  font-weight: 700;
+  src: url(http://localhost:8080/css/fonts/ktu.woff) format('woff');
+}
