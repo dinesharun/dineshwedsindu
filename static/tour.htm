@@ -6,17 +6,286 @@
       html { height: 100% }
       body { height: 100%; margin: 0; padding: 0;  background-color:#efefef;}
       #map-canvas { height: 100% }
+    .infoBox {overflow:hidden;height:99%;opacity:0.81;font-size:81%;padding:3px;color:#000000;font-weight:bold;}
     </style>
-    <script type="text/javascript" src="scripts/OpenLayers.light.js"> </script>
+    <script type="text/javascript" src="scripts/jquerymin.js"></script>
+    <script type="text/javascript" src="scripts/jquery.mCustomScrollbar.min.js"></script>
+    <script type="text/javascript" src="scripts/config.js"> </script>
     <script type="text/javascript">
-      function onMapLoad() {
-        map = new OpenLayers.Map("map-canvas");
-        map.addLayer(new OpenLayers.Layer.OSM("defLayer", "https://api.maptiler.com/maps/basic/${z}/${x}/${y}.png?key=kG4IsuTX9LAy3Ctp6WqP"));
-        map.zoomToMaxExtent();
+      var styles = [ {
+          "featureType": "road",
+          "elementType": "geometry.stroke",
+          "stylers": [
+            { "visibility": "on" },
+            { "color": "#000000" },
+            { "weight": 0.6 }
+          ]
+        },{
+          "featureType": "landscape.natural.terrain",
+          "stylers": [
+            { "weight": 0.1 },
+            { "visibility": "off" }
+          ]
+        },{
+          "featureType": "water",
+          "elementType": "geometry.fill",
+          "stylers": [
+            { "visibility": "on" },
+            { "color": "#e4e4f3" },
+            { "weight": 1.1 }
+          ]
+        },{
+          "featureType": "administrative.locality",
+          "elementType": "labels",
+          "stylers": [
+            { "visibility": "on" },
+            { "color": "#ebecff" },
+            { "lightness": -96 },
+            { "weight": 0.3 }
+          ]
+        },{
+          "featureType": "landscape.natural",
+          "elementType": "geometry.fill",
+          "stylers": [
+            { "weight": 0.6 },
+            { "visibility": "on" },
+            { "color": "#fafafa" }
+          ]
+        },{
+          "featureType": "road",
+          "elementType": "geometry.fill",
+          "stylers": [
+            { "color": "#dddddd" },
+            { "visibility": "on" },
+            { "weight": 1.5 }
+          ]
+        },{
+          "featureType": "road",
+          "elementType": "labels",
+          "stylers": [
+            { "visibility": "off" }
+          ]
+        },{
+          "featureType": "poi",
+          "stylers": [
+            { "visibility": "off" }
+          ]
+        }
+      ];   
+      
+      function getParameters()  {
+        var searchString = window.location.search.substring(1) , params = searchString.split("&") , hash = {};
+        for (var i = 0; i < params.length; i++) {
+          var val = params[i].split("=");
+          hash[unescape(val[0])] = unescape(val[1]);
+        }
+        return hash;
+      }
+ 
+      function drawMap() {
+        var iconbase ="https://dineshwedsindu.appspot.com/imgs/";
+        var styledMap = new google.maps.StyledMapType(styles, {name: "Road Map"});
+   
+        var getParams = getParameters();
+        var idx  = getParams["i"];
+        var type = getParams["t"];
+   
+        var centerLoc = new Array();
+        var markerLoc = new Array();
+        var zoomLevel = new Array();
+   
+        centerLoc[0] = new google.maps.LatLng(8.514812,77.655526);
+        markerLoc[0] = new google.maps.LatLng(8.73172,77.700409);
+        zoomLevel[0] = 9;
+        centerLoc[10] = new google.maps.LatLng(8.958926,77.312923);
+        markerLoc[10] = new google.maps.LatLng(8.958926,77.312923);
+        zoomLevel[10] = 10;
+        centerLoc[1] = new google.maps.LatLng(8.965793,77.206314);
+        markerLoc[1] = new google.maps.LatLng(8.9500, 77.0667);
+        zoomLevel[1] = 11;
+        centerLoc[2] = new google.maps.LatLng(8.759503,77.461746);
+        markerLoc[2] = new google.maps.LatLng(8.569245,77.411403);
+        zoomLevel[2] = 10;
+        centerLoc[3] = new google.maps.LatLng(8.642801,77.737777);
+        markerLoc[3] = new google.maps.LatLng(8.58102, 77.76123);
+        zoomLevel[3] = 11;
+        centerLoc[4] = new google.maps.LatLng(8.72803,77.687667);
+        markerLoc[4] = new google.maps.LatLng(8.72803,77.687667);
+        zoomLevel[4] = 12;
+        centerLoc[5] = new google.maps.LatLng(8.933998,77.278076);
+        markerLoc[5] = new google.maps.LatLng(8.933998,77.278076);
+        zoomLevel[5] = 12;
+        centerLoc[6] = new google.maps.LatLng(8.822793,77.452956);
+        markerLoc[6] = new google.maps.LatLng(8.713204,77.365483);
+        zoomLevel[6] = 10;
+        centerLoc[7] = new google.maps.LatLng(8.218179,77.506957);
+        markerLoc[7] = new google.maps.LatLng(8.077947,77.550429);
+        zoomLevel[7] = 10;
+  
+        if(type == "s") {
+          var mapOptions = {
+              center: centerLoc[idx],
+              zoom: zoomLevel[idx],
+              disableDefaultUI: false,
+              mapTypeId: google.maps.MapTypeId.SATELLITE, 
+              mapTypeControlOptions: {
+                mapTypeIds: ["map_01", google.maps.MapTypeId.SATELLITE, google.maps.MapTypeId.HYBRID],
+                style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+                position: google.maps.ControlPosition.TOP_CENTER
+              },
+              zoomControlOptions: {
+                position: google.maps.ControlPosition.LEFT_BOTTOM 
+              },
+              panControlOptions: {
+                position: google.maps.ControlPosition.LEFT_BOTTOM 
+              },
+              scaleControlOptions: {
+                position: google.maps.ControlPosition.LEFT_BOTTOM 
+              },
+              streetViewControl: false
+            };
+        } else {
+          var mapOptions = {
+              center: centerLoc[idx],
+              zoom: zoomLevel[idx],
+              disableDefaultUI: false,
+              mapTypeIds: [google.maps.MapTypeId.ROADMAP, "map_01"],
+              mapTypeControlOptions: {
+                mapTypeIds: ["map_01", google.maps.MapTypeId.SATELLITE, google.maps.MapTypeId.HYBRID],
+                style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+                position: google.maps.ControlPosition.TOP_CENTER
+              },
+              zoomControlOptions: {
+                position: google.maps.ControlPosition.LEFT_BOTTOM 
+              },
+              panControlOptions: {
+                position: google.maps.ControlPosition.LEFT_BOTTOM 
+              },
+              scaleControlOptions: {
+                position: google.maps.ControlPosition.LEFT_BOTTOM 
+              },
+              streetViewControl: false          
+            };
+        }
+        var map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+        var marker6 = new google.maps.Marker({
+            position: markerLoc[0],
+            map: map,
+            icon: iconbase + "mapMarker01.png",
+            title: 'Tirunelveli'
+          });
+        var marker60 = new google.maps.Marker({
+            position: markerLoc[10],
+            map: map,
+            icon: iconbase + "mapMarker01.png",
+            title: 'Tenkasi'
+          });
+        var marker5 = new google.maps.Marker({
+            position: markerLoc[1],
+            map: map,
+            icon: iconbase + "mapMarker02.png",
+            title: 'Thenmalalai'
+          });
+        var marker4 = new google.maps.Marker({
+            position: markerLoc[2],
+            map: map,
+            icon: iconbase + "mapMarker03.png",
+            title: 'Maanjolai'
+          });
+        var marker3 = new google.maps.Marker({
+            position: markerLoc[3],
+            map: map,
+            icon: iconbase + "mapMarker04.png",
+            title: 'Konthankulam'
+          });
+        var marker2 = new google.maps.Marker({
+            position: markerLoc[4],
+            map: map,
+            icon: iconbase + "mapMarker05.png",
+            title: 'Nellaiappar Temple'
+          });
+        var marker1 = new google.maps.Marker({
+            position: markerLoc[5],
+            map: map,
+            icon: iconbase + "mapMarker03.png",
+            title: 'Courtallam'
+          });
+        var marker7 = new google.maps.Marker({
+            position: markerLoc[6],
+            map: map,
+            icon: iconbase + "mapMarker02.png",
+            title: 'Papanasam'
+          });
+        var marker8 = new google.maps.Marker({
+            position: markerLoc[7],
+            map: map,
+            icon: iconbase + "mapMarker04.png",
+            title: 'Kanyakumari'
+          });
+   
+        var str = new Array();
+        str[1] = '<div id="info1" class="infoBox"> <div style="text-align:center;font-size:124%;"> Thenmalai &nbsp;&nbsp;&nbsp; <br /> </div></div>';
+        str[2] = '<div id="info1" class="infoBox"> <div style="text-align:center;font-size:124%;"> Manjoolai &nbsp;&nbsp;&nbsp; <br /> </div></div>';
+        str[3] = '<div id="info1" class="infoBox"> <div style="text-align:center;font-size:124%;"> Koonthankulam &nbsp;&nbsp;&nbsp; <br />  </div></div>';
+        str[4] = '<div id="info1" class="infoBox"> <div style="text-align:center;font-size:124%;"> Nellaiappar &nbsp;&nbsp;&nbsp; <br /> </div></div>';
+        str[5] = '<div id="info1" class="infoBox"> <div style="text-align:center;font-size:124%;"> Courtallam &nbsp;&nbsp;&nbsp; <br /> </div></div>';
+        str[6] = '<div id="info1" class="infoBox"> <div style="text-align:center;font-size:124%;"> Papanasam &nbsp;&nbsp;&nbsp; <br /> </div></div>';
+        str[7] = '<div id="info1" class="infoBox"> <div style="text-align:center;font-size:124%;"> KanyaKumari &nbsp;&nbsp;&nbsp; <br /> </div></div>';
+   
+        var newWidth = ($("body").width()*0.75);
+        var newHeight = ($("body").height()*0.48);
+   
+        var info1 = new google.maps.InfoWindow({
+            content: str[idx],
+            maxWidth: 800
+          });      
+   
+        var markers = new Array();
+        markers[1] = marker5;
+        markers[2] = marker4;
+        markers[3] = marker3;
+        markers[4] = marker2;
+        markers[5] = marker1;
+        markers[6] = marker7;
+        markers[7] = marker8;
+   
+        if(type != "s") {
+          map.mapTypes.set('map_01', styledMap);
+          map.setMapTypeId('map_01');
+        }
+   
+        if((idx>=1)&&(idx<=7)) {
+          info1.open(map,markers[idx]);
+          google.maps.event.addListener(marker1, 'click', function() { info1.open(map,marker1); info1.setContent(str[5]); } );
+          google.maps.event.addListener(marker2, 'click', function() { info1.open(map,marker2); info1.setContent(str[4]); } );
+          google.maps.event.addListener(marker3, 'click', function() { info1.open(map,marker3); info1.setContent(str[3]); } );
+          google.maps.event.addListener(marker4, 'click', function() { info1.open(map,marker4); info1.setContent(str[2]); } );
+          google.maps.event.addListener(marker5, 'click', function() { info1.open(map,marker5); info1.setContent(str[1]); } );
+          google.maps.event.addListener(marker7, 'click', function() { info1.open(map,marker7); info1.setContent(str[6]); } );
+          google.maps.event.addListener(marker8, 'click', function() { info1.open(map,marker8); info1.setContent(str[7]); } );
+        }
+   
+        google.maps.event.addListener(info1, 'domready', function() {
+          var i = document.getElementById('info1');
+          i.parentNode.style.overflow='visible';
+          i.parentNode.parentNode.parentNode.style.border='1px solid #000000';
+          i.parentNode.parentNode.style.overflow='visible';
+        });
+      }
+
+      function onLoad() {
+        var jsScript = document.createElement("script");
+        jsScript.type = "application/javascript";
+        jsScript.onload = function() {
+	        google.maps.visualRefresh = true;
+          drawMap();
+        };
+        jsScript.src = "https://maps.googleapis.com/maps/api/js?key=" + gMapsAPIKey;
+        document.body.appendChild(jsScript);
       }
     </script>
   </head>
-  <body onload="onMapLoad()">
+  <body onload="onLoad()">
     <div id="map-canvas"/>
   </body>
 </html>

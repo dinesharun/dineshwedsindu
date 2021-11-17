@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+      html { height: 100% }
+      body { height: 100%; margin: 0; padding: 0;  background-color:#efefef;}
+      #map-canvas { height: 100% }
+    </style>
+    <script type="text/javascript" src="scripts/OpenLayers.light.js"> </script>
+    <script type="text/javascript">
+      function onMapLoad() {
+        map = new OpenLayers.Map("map-canvas");
+        map.addLayer(new OpenLayers.Layer.OSM("defLayer", "https://api.maptiler.com/maps/basic/${z}/${x}/${y}.png?key=kG4IsuTX9LAy3Ctp6WqP"));
+        map.zoomToMaxExtent();
+      }
+    </script>
+  </head>
+  <body onload="onMapLoad()">
+    <div id="map-canvas"/>
+  </body>
+</html>
